@@ -1,0 +1,19 @@
+@startuml
+title Standard Bank Context Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "A client of the Standard Bank")
+Person(back_worker, "Back Office Worker", "Manager in charge of the back office of Standard Bank")
+System(StandardBankSystem, "Standard Bank System", "The main system of the bank")
+
+System_Ext(sms_gateway, "SMS Gateway", "External API for sending messages to users via telephone operators")
+
+Rel(user, StandardBankSystem, "Submitting a deposit application")
+Rel(back_worker,StandardBankSystem,"Processing a deposit request")
+Rel(StandardBankSystem,sms_gateway,"Sending SMS to SMS Gateway")
+Rel(sms_gateway,user,"Sending SMS to user")
+
+@enduml

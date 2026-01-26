@@ -1,0 +1,27 @@
+@startuml
+title StandardBank Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "A client of the Standard Bank")
+Person(call_center_worker, "Call Center Worker", "Call center workers who provide consultations to clients")
+Person(external_call_center_worker, "External Call Center Worker", "External call center workers who provide consultations to clients")
+System(StandardBankSystem, "Standard Bank System", "The main system of the bank")
+
+Container_Boundary(StandardBankSystem, "StandardBank System") {
+  Container(AutomatedBankingSystem, "Automated Banking System", "C++", "A system with which bank employees interact to automate banking services")
+  Container(AutomatedBankingSystemDatabase, "Database", "Oracle", "Stores bank data")
+}
+
+System_Ext(email_service, "Email service", "External service for sending emails")
+
+Rel(user, call_center_worker, "Call to clarify deposit rates")
+Rel(user, external_call_center_worker, "Call to clarify deposit rates")
+Rel(call_center_worker, AutomatedBankingSystem, "Request for deposit rates")
+Rel(AutomatedBankingSystem, AutomatedBankingSystemDatabase, "Read/write deposit rates")
+Rel(AutomatedBankingSystem, email_service, "Sending an email with a file containing deposit rates")
+Rel(email_service,external_call_center_worker,"Sending email to external call center")
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+title StandardBank Container Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "A client of the Standard Bank")
+Person(back_worker, "Back Office Worker", "Manager in charge of the back office of Standard Bank")
+System(StandardBankSystem, "Standard Bank System", "The main system of the bank")
+
+Container_Boundary(StandardBankSystem, "StandardBank System") {
+  Container(APIGateway, "API Gateway", "Java, Spring Boot", "A single point of interaction with the system for users")
+  Container(InternetBanking, "Internet Banking", "React.js", "A system with which clients interact via the Internet to obtain banking services")
+  Container(KafkaQueue, "Kafka Queue", "Kafka", "Queue for asynchronous communication between Internet banking and the ABS")
+  Container(AutomatedBankingSystem, "Automated Banking System", "C++", "A system with which bank employees interact to automate banking services")
+  Container(AutomatedBankingSystemDatabase, "Database", "Oracle", "Stores bank data")
+}
+
+System_Ext(sms_gateway, "SMS Gateway", "External API for sending messages to users via telephone operators")
+
+Rel(user, APIGateway, "Submitting a deposit application")
+Rel(APIGateway, InternetBanking, "Submitting a deposit application")
+Rel(back_worker,AutomatedBankingSystem,"Processing a deposit request")
+Rel(InternetBanking, KafkaQueue, "Data transfer from/to ABS")
+Rel(KafkaQueue, AutomatedBankingSystem, "Data transfer from/to ABS")
+Rel(AutomatedBankingSystem,AutomatedBankingSystemDatabase,"Reads/Writes bank data")
+Rel(AutomatedBankingSystem,sms_gateway,"Sending SMS to SMS Gateway")
+Rel(sms_gateway,user,"Sending SMS to user")
+@enduml
